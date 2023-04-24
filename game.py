@@ -23,8 +23,8 @@ class Game(object):
         self.init_scene()
         self.init_camera()
 
-        while not self.viewer.closed():
-            self.update
+        while not self.viewer.closed:
+            self.update()
 
     def init_scene(self):
         self.scene.add_ground(altitude=-100)
