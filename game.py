@@ -50,7 +50,7 @@ class Game(object):
         self.table.set_name("Table")
 
     def init_camera(self):
-        self.viewer.set_camera_xyz(-4, 0, 2)
+        self.viewer.set_camera_xyz(-64, 0, 64)
         self.viewer.set_camera_rpy(0,-45, 0)
         self.viewer.window.set_camera_parameters(0.05, 100, 1)
 
