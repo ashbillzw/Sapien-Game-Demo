@@ -6,8 +6,10 @@ import maploader
 
 
 class Game(object):
-    def __init__(self):
+    def __init__(self, DEBUG= False):
         self.gametick = 0
+
+        self.DEBUG = DEBUG
 
         engine = sapien.core.Engine()
         renderer = sapien.core.SapienRenderer()
@@ -27,10 +29,25 @@ class Game(object):
             self.update()
 
     def init_scene(self):
-        self.scene.add_ground(altitude=-100)
+        self.scene.add_ground(altitude=-256)
 
         self.scene.set_ambient_light([0.5, 0.5, 0.5])
-        self.scene.add_directional_light([0, 1, -1], [0.5, 0.5, 0.5])
+        self.scene.add_directional_light(
+            direction = [0, 1, -1],
+            color = [0.5, 0.5, 0.5]
+        )
+
+        table_builder = self.scene.create_articulation_builder()
+
+        table_anchor = table_builder.create_link_builder()
+        table_anchor.set_name("Table Anchor")
+        if self.DEBUG: table_anchor.add_sphere_visual(
+            radius = 2,
+            color = [1, 0, 0]
+        )
+
+        self.table = table_builder.build()
+        self.table.set_name("Table")
 
     def init_camera(self):
         self.viewer.set_camera_xyz(-4, 0, 2)
@@ -47,9 +64,8 @@ class Game(object):
         self.gametick += 1
 
 
-
 def main():
-    game = Game()
+    game = Game(DEBUG= True)
 
 if __name__ == '__main__':
     main()
