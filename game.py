@@ -25,7 +25,7 @@ def main():
     actor_builder.add_box_collision(half_size=[0.5, 0.5, 0.5])
     actor_builder.add_box_visual(half_size=[0.5, 0.5, 0.5], color=[1., 0., 0.])
     box = actor_builder.build(name='box')  # Add a box
-    box.set_pose(sapien.Pose(p=[0, 0, 0.5]))
+    box.set_pose(sapien.core.Pose(p=[0, 0, 0.5]))
 
 
     # Add some lights so that you can observe the scene
