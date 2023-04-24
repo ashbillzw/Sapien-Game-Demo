@@ -46,7 +46,7 @@ class Game(object):
             color = [1, 0, 0]
         )
 
-        self.table = table_builder.build()
+        self.table = table_builder.build_kinematic()
         self.table.set_name("Table")
 
     def init_camera(self):
