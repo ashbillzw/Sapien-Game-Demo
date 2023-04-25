@@ -5,10 +5,10 @@ import sapien
 import maploader
 
 
-def get_joints_dict(articulation: sapien.Articulation):
+def get_joints_dict(articulation: sapien.core.Articulation):
     joints = articulation.get_joints()
     joint_names =  [joint.name for joint in joints]
-    assert len(joint_names) == len(set(joint_names)), 'Joint names are assumed to be unique.'
+    assert len(joint_names) == len(set(joint_names))
     return {joint.name: joint for joint in joints}
 
 
@@ -82,8 +82,8 @@ class Game(object):
         self.table = table_builder.build_kinematic()
         self.table.set_name("Table")
 
-        self.testpitchaxle = table_pitch_axle
-        self.testpitchaxle.set_drive_property(stiffness=1000.0, damping=0.0)
+        self.testpitchaxlejoint = [joint for joint in self.table.get_joints() if joint.name == "Table Pitch Axle"][0]
+        self.testpitchaxlejoint.set_drive_property(stiffness=1000.0, damping=0.0)
 
     def init_camera(self):
         self.viewer.set_camera_xyz(-64, 0, 64)
@@ -98,9 +98,9 @@ class Game(object):
             self.viewer.render()
 
         if self.viewer.window.key_down('w'):
-            self.testpitchaxle.set_drive_velocity_target(5)
+            self.testpitchaxlejoint.set_drive_velocity_target(5)
         if self.viewer.window.key_down('s'):
-            self.testpitchaxle.set_drive_velocity_target(-5)
+            self.testpitchaxlejoint.set_drive_velocity_target(-5)
 
         self.gametick += 1
 
