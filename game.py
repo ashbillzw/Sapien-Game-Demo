@@ -2,7 +2,7 @@ import numpy as np
 
 import sapien
 
-import maploader
+import map_loader
 
 
 def get_joints_dict(articulation: sapien.core.Articulation):
