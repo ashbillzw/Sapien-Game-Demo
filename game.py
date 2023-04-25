@@ -45,30 +45,26 @@ class Game(object):
             radius = 2,
             color = [1, 0, 0]
         )
-            
+        
         table_pitch_axle = table_builder.create_link_builder(table_anchor)
         table_pitch_axle.set_name("Table Pitch Axle")
         table_pitch_axle.set_joint_name("Table Pitch Axle Bearing")
         table_pitch_axle.set_joint_properties(
-            joint_type= 'revolute',
-            limits=[[-0.25, 0.25]],
+            joint_type= "revolute",
+            limits= [[-0.25, 0.25]],
         )
         if self.DEBUG: table_pitch_axle.add_box_visual(
             half_size= [1, 1, 4],
-            color=[0, 1, 0]
+            color= [0, 1, 0]
         )
 
         table_roll_axle = table_builder.create_link_builder(table_pitch_axle)
         table_roll_axle.set_name("Table Roll Axle")
         table_roll_axle.set_joint_name("Table Roll Axle Bearing")
         table_roll_axle.set_joint_properties(
-            joint_type= 'revolute',
-            limits=[[-0.25, 0.25]],
-            pose_in_parent= sapien.Pose(0, [0, 0.7071068, 0, 0.7071068])
-        )
-        if self.DEBUG: table_pitch_axle.add_box_visual(
-            half_size= [1, 1, 4],
-            color=[0, 0, 1]
+            joint_type= "revolute",
+            limits= [[-0.25, 0.25]],
+            pose_in_parent= sapien.core.Pose([0, 0, 0], [0, 0.7071068, 0, 0.7071068])
         )
 
         self.table = table_builder.build_kinematic()
