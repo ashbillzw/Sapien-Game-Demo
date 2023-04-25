@@ -1,4 +1,4 @@
-import numpy as np
+import numpy
 
 import sapien
 
@@ -26,7 +26,7 @@ class Game(object):
         self.scene = engine.create_scene()
         self.scene.set_timestep(1 / 300.0)
 
-        self.viewer = sapien.utils.Viewer(renderer)
+        self.viewer = sapien.utils.viewer.Viewer(renderer)
         self.viewer.set_scene(self.scene)
 
         self.init_scene()
@@ -34,6 +34,7 @@ class Game(object):
 
         while not self.viewer.closed:
             self.update()
+            
 
     def init_scene(self):
         self.scene.add_ground(altitude=-256)
@@ -56,34 +57,43 @@ class Game(object):
         table_pitch_axle = table_builder.create_link_builder(table_anchor)
         table_pitch_axle.set_name("Table Pitch Axle")
         table_pitch_axle.set_joint_name("Table Pitch Axle Bearing")
+        # table_pitch_axle.set_joint_properties(
+        #     joint_type= "revolute",
+        #     limits= [[-numpy.inf, numpy.inf]],
+        #     pose_in_parent= sapien.core.Pose([0, 0, 0], [0, 0, 0, 1])
+        # )
         table_pitch_axle.set_joint_properties(
             joint_type= "revolute",
-            limits= [[-0.25, 0.25]],
+            limits= [[-1.5708, 1.5708]],
+            pose_in_parent= sapien.core.Pose([0, 0, 0], [0.7071068, 0, 0, 0.7071068])
         )
         if self.DEBUG: table_pitch_axle.add_box_visual(
             half_size= [1, 1, 4],
             color= [0, 1, 0]
         )
-
-        table_roll_axle = table_builder.create_link_builder(table_pitch_axle)
-        table_roll_axle.set_name("Table Roll Axle")
-        table_roll_axle.set_joint_name("Table Roll Axle Bearing")
-        table_roll_axle.set_joint_properties(
-            joint_type= "revolute",
-            limits= [[-0.25, 0.25]],
-            pose_in_parent= sapien.core.Pose([0, 0, 0], [0, 0.7071068, 0, 0.7071068])
+        if self.DEBUG: table_pitch_axle.add_box_collision(
+            half_size= [1, 1, 4]
         )
+
+        # table_roll_axle = table_builder.create_link_builder(table_pitch_axle)
+        # table_roll_axle.set_name("Table Roll Axle")
+        # table_roll_axle.set_joint_name("Table Roll Axle Bearing")
+        # table_roll_axle.set_joint_properties(
+        #     joint_type= "revolute",
+        #     limits= [[-0.25, 0.25]],
+        #     pose_in_parent= sapien.core.Pose([0, 0, 0], [0, 0.7071068, 0, 0.7071068])
+        # )
 
         # if self.DEBUG: table_roll_axle.add_box_visual(
         #     half_size= [1, 1, 4],
         #     color= [0, 0, 1]
         # )
 
-        self.table = table_builder.build_kinematic()
+        self.table = table_builder.build(fix_root_link = True)
         self.table.set_name("Table")
 
-        self.testpitchaxlejoint = [joint for joint in self.table.get_joints() if joint.name == "Table Pitch Axle"][0]
-        self.testpitchaxlejoint.set_drive_property(stiffness=1000.0, damping=0.0)
+        self.testpitchaxlejoint = [joint for joint in self.table.get_joints() if joint.name == "Table Pitch Axle Bearing"][0]
+        self.testpitchaxlejoint.set_drive_property(stiffness=100000.0, damping=1000000.0)
 
     def init_camera(self):
         self.viewer.set_camera_xyz(-64, 0, 64)
@@ -93,15 +103,28 @@ class Game(object):
     def update(self):
         self.scene.step()
 
+
         if self.gametick % 5 == 0:
             self.scene.update_render()
             self.viewer.render()
 
-        if self.viewer.window.key_down('w'):
-            self.testpitchaxlejoint.set_drive_velocity_target(5)
-        if self.viewer.window.key_down('s'):
-            self.testpitchaxlejoint.set_drive_velocity_target(-5)
-
+        # if self.viewer.window.key_down('i'):
+        #     print("i")
+        #     self.testpitchaxlejoint.set_drive_velocity_target(50.0)
+        # elif self.viewer.window.key_down('k'):
+        #     print("k")
+        #     self.testpitchaxlejoint.set_drive_velocity_target(-50.0)
+        # else:
+        #     self.testpitchaxlejoint.set_drive_velocity_target(0.0)
+        if self.viewer.window.key_down('j'):
+            print("j")
+            self.testpitchaxlejoint.set_drive_target(0.5)
+        elif self.viewer.window.key_down('l'):
+            print("l")
+            self.testpitchaxlejoint.set_drive_target(-0.5)
+        else:
+            self.testpitchaxlejoint.set_drive_target(0.0)
+            
         self.gametick += 1
 
 
