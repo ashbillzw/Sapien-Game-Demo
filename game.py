@@ -5,6 +5,13 @@ import sapien
 import maploader
 
 
+def get_joints_dict(articulation: sapien.Articulation):
+    joints = articulation.get_joints()
+    joint_names =  [joint.name for joint in joints]
+    assert len(joint_names) == len(set(joint_names)), 'Joint names are assumed to be unique.'
+    return {joint.name: joint for joint in joints}
+
+
 class Game(object):
     def __init__(self, DEBUG= False):
         self.gametick = 0
@@ -67,8 +74,16 @@ class Game(object):
             pose_in_parent= sapien.core.Pose([0, 0, 0], [0, 0.7071068, 0, 0.7071068])
         )
 
+        # if self.DEBUG: table_roll_axle.add_box_visual(
+        #     half_size= [1, 1, 4],
+        #     color= [0, 0, 1]
+        # )
+
         self.table = table_builder.build_kinematic()
         self.table.set_name("Table")
+
+        self.testpitchaxle = table_pitch_axle
+        self.testpitchaxle.set_drive_property(stiffness=1000.0, damping=0.0)
 
     def init_camera(self):
         self.viewer.set_camera_xyz(-64, 0, 64)
@@ -81,6 +96,11 @@ class Game(object):
         if self.gametick % 5 == 0:
             self.scene.update_render()
             self.viewer.render()
+
+        if self.viewer.window.key_down('w'):
+            self.testpitchaxle.set_drive_velocity_target(5)
+        if self.viewer.window.key_down('s'):
+            self.testpitchaxle.set_drive_velocity_target(-5)
 
         self.gametick += 1
 
