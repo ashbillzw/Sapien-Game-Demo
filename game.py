@@ -6,13 +6,6 @@ from table import Table
 import map_loader
 
 
-def get_joints_dict(articulation: sapien.core.Articulation):
-    joints = articulation.get_joints()
-    joint_names =  [joint.name for joint in joints]
-    assert len(joint_names) == len(set(joint_names))
-    return {joint.name: joint for joint in joints}
-
-
 class Game(object):
     def __init__(self):
         self.gametick = 0
@@ -66,15 +59,15 @@ class Game(object):
             print("l")
             self.table.testpitchaxlejoint.set_drive_target(-0.5)
         else:
-            self.table.testpitchaxlejoint.set_drive_target(0.0)
+            self.table.testpitchaxlejoint.set_drive_target(0)
         if self.viewer.window.key_down('j'):
             print("i")
-            self.table.testrollaxlejoint.set_drive_target(0.5)
+            self.table.testrollaxlejoint.set_drive_target(-0.5)
         elif self.viewer.window.key_down('l'):
             print("k")
-            self.table.testrollaxlejoint.set_drive_target(-0.5)
+            self.table.testrollaxlejoint.set_drive_target(0.5)
         else:
-            self.table.testrollaxlejoint.set_drive_target(0.0)
+            self.table.testrollaxlejoint.set_drive_target(0)
             
         self.gametick += 1
 
