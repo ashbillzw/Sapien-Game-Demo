@@ -6,9 +6,11 @@ class Table(object):
     def __init__(self, scene):
         self.scene = scene
 
-        self.DEBUG = True
+        self.DEBUG1 = True
+        self.DEBUG2 = True
+        self.DEBUG3 = True
 
-        self.testmap = numpy.zeros((4, 4))
+        self.testmap = numpy.zeros((8, 8))
 
         self._build_table()
 
@@ -17,7 +19,7 @@ class Table(object):
 
         table_anchor = table_builder.create_link_builder()
         table_anchor.set_name("Table Anchor")
-        if self.DEBUG: table_anchor.add_sphere_visual(
+        if self.DEBUG1: table_anchor.add_sphere_visual(
             radius = 1,
             color = [1, 0, 0]
         )
@@ -31,7 +33,7 @@ class Table(object):
             pose_in_parent= Pose([0, 0, 0], [0.7071068, 0, 0, 0.7071068])
         )
         table_pitch_axle.add_box_collision(half_size= [0.5, 0.5, 2])
-        if self.DEBUG: table_pitch_axle.add_box_visual(
+        if self.DEBUG2: table_pitch_axle.add_box_visual(
             half_size= [0.5, 0.5, 2],
             color= [0, 1, 0]
         )
@@ -45,7 +47,7 @@ class Table(object):
             pose_in_parent= Pose((0, 0, 0), [-0.7071068, 0, 0, 0.7071068])
         )
         table_roll_axle.add_box_collision(half_size= [2, 2, 0.5])
-        if self.DEBUG: table_roll_axle.add_box_visual(
+        if self.DEBUG3: table_roll_axle.add_box_visual(
             half_size= (2, 2, 0.5),
             color= [0, 0, 1]
         )
@@ -62,24 +64,24 @@ class Table(object):
         # wall.add_box_visual(half_size= [0.125, 0.125, 0.125], color= (1, 1, 1))
 
 
-        for (x, y), h in numpy.ndenumerate(self.testmap):
-            print(x, y, ":", h)
-            wall = table_builder.create_link_builder(table_roll_axle)
-            wall.set_name("Wall " + str((x, y)))
-            wall.set_joint_name("Wall " + str((x, y)) + "Joint")
-            wall.set_joint_properties(
-                joint_type= "fixed",
-                limits= (0, 0),
-                pose_in_parent= Pose([x-1.5, y-1.5, 5], (0, 0, 0, 1))
-            )
-            wall.add_box_collision(half_size=[0.25, 0.25, 0.25])
-            wall.add_box_visual(half_size=[0.25, 0.25, 0.25])
+        # for (x, y), h in numpy.ndenumerate(self.testmap):
+        #     print(x, y, ":", h)
+        #     wall = table_builder.create_link_builder(table_roll_axle)
+        #     wall.set_name("Wall " + str((x, y)))
+        #     wall.set_joint_name("Wall " + str((x, y)) + "Joint")
+        #     wall.set_joint_properties(
+        #         joint_type= "fixed",
+        #         limits= (0, 0),
+        #         pose_in_parent= Pose([x/2-1.5, y/2-1.5, 0], (0, 0, 0, 1))
+        #     )
+        #     wall.add_box_collision(half_size=[0.25, 0.25, 0.25])
+        #     wall.add_box_visual(half_size=[0.25, 0.25, 0.25])
 
         self.articulation = table_builder.build(fix_root_link = True)
         self.articulation.set_name("Table")
 
         self.testpitchaxlejoint = [joint for joint in self.articulation.get_joints() if joint.name == "Table Pitch Axle Bearing"][0]
-        self.testpitchaxlejoint.set_drive_property(stiffness=100000.0, damping=1000000.0)
+        self.testpitchaxlejoint.set_drive_property(stiffness=1000000.0, damping=10000000.0)
 
         self.testrollaxlejoint = [joint for joint in self.articulation.get_joints() if joint.name == "Table Roll Axle Bearing"][0]
-        self.testrollaxlejoint.set_drive_property(stiffness=100000.0, damping=1000000.0)
+        self.testrollaxlejoint.set_drive_property(stiffness=1000000.0, damping=10000000.0)
