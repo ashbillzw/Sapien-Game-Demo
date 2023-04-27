@@ -60,21 +60,21 @@ class Game(object):
             self.viewer.render()
 
         if self.viewer.window.key_down('i'):
-            print("i")
-            self.testrollaxlejoint.set_drive_target(0.5)
-        elif self.viewer.window.key_down('k'):
-            print("k")
-            self.testrollaxlejoint.set_drive_target(-0.5)
-        else:
-            self.testrollaxlejoint.set_drive_target(0.0)
-        if self.viewer.window.key_down('j'):
             print("j")
-            self.testpitchaxlejoint.set_drive_target(0.5)
-        elif self.viewer.window.key_down('l'):
+            self.table.testpitchaxlejoint.set_drive_target(0.5)
+        elif self.viewer.window.key_down('k'):
             print("l")
-            self.testpitchaxlejoint.set_drive_target(-0.5)
+            self.table.testpitchaxlejoint.set_drive_target(-0.5)
         else:
-            self.testpitchaxlejoint.set_drive_target(0.0)
+            self.table.testpitchaxlejoint.set_drive_target(0.0)
+        if self.viewer.window.key_down('j'):
+            print("i")
+            self.table.testrollaxlejoint.set_drive_target(0.5)
+        elif self.viewer.window.key_down('l'):
+            print("k")
+            self.table.testrollaxlejoint.set_drive_target(-0.5)
+        else:
+            self.table.testrollaxlejoint.set_drive_target(0.0)
             
         self.gametick += 1
 
