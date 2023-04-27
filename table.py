@@ -62,18 +62,18 @@ class Table(object):
         # wall.add_box_visual(half_size= [0.125, 0.125, 0.125], color= (1, 1, 1))
 
 
-        for y in self.testmap:
-            for x in y:
-                wall = table_builder.create_link_builder(table_roll_axle)
-                wall.set_name("Wall " + str((x, y)))
-                wall.set_joint_name("Wall " + str((x, y)) + "Joint")
-                wall.set_joint_properties(
-                    joint_type= "fixed",
-                    limits= (0, 0),
-                    pose_in_parent= Pose([x, y[0], 5], (0, 0, 0, 1))
-                )
-                wall.add_box_collision(half_size=[0.25, 0.25, 0.25])
-                wall.add_box_visual(half_size=[0.25, 0.25, 0.25])
+        for (x, y), h in numpy.ndenumerate(self.testmap):
+            print(x, y, ":", h)
+            wall = table_builder.create_link_builder(table_roll_axle)
+            wall.set_name("Wall " + str((x, y)))
+            wall.set_joint_name("Wall " + str((x, y)) + "Joint")
+            wall.set_joint_properties(
+                joint_type= "fixed",
+                limits= (0, 0),
+                pose_in_parent= Pose([x-1.5, y-1.5, 5], (0, 0, 0, 1))
+            )
+            wall.add_box_collision(half_size=[0.25, 0.25, 0.25])
+            wall.add_box_visual(half_size=[0.25, 0.25, 0.25])
 
         self.articulation = table_builder.build(fix_root_link = True)
         self.articulation.set_name("Table")
