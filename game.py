@@ -2,6 +2,7 @@ import numpy
 
 import sapien
 
+from table import Table
 import map_loader
 
 
@@ -13,14 +14,12 @@ def get_joints_dict(articulation: sapien.core.Articulation):
 
 
 class Game(object):
-    def __init__(self, DEBUG= False):
+    def __init__(self):
         self.gametick = 0
 
-        self.DEBUG = DEBUG
-
-        engine = sapien.core.Engine()
         renderer = sapien.core.SapienRenderer()
 
+        engine = sapien.core.Engine()
         engine.set_renderer(renderer)
 
         self.scene = engine.create_scene()
@@ -45,55 +44,7 @@ class Game(object):
             color = [0.5, 0.5, 0.5]
         )
 
-        table_builder = self.scene.create_articulation_builder()
-
-        table_anchor = table_builder.create_link_builder()
-        table_anchor.set_name("Table Anchor")
-        if self.DEBUG: table_anchor.add_sphere_visual(
-            radius = 2,
-            color = [1, 0, 0]
-        )
-        
-        table_pitch_axle = table_builder.create_link_builder(table_anchor)
-        table_pitch_axle.set_name("Table Pitch Axle")
-        table_pitch_axle.set_joint_name("Table Pitch Axle Bearing")
-        # table_pitch_axle.set_joint_properties(
-        #     joint_type= "revolute",
-        #     limits= [[-numpy.inf, numpy.inf]],
-        #     pose_in_parent= sapien.core.Pose([0, 0, 0], [0, 0, 0, 1])
-        # )
-        table_pitch_axle.set_joint_properties(
-            joint_type= "revolute",
-            limits= [[-1.5708, 1.5708]],
-            pose_in_parent= sapien.core.Pose([0, 0, 0], [0.7071068, 0, 0, 0.7071068])
-        )
-        if self.DEBUG: table_pitch_axle.add_box_visual(
-            half_size= [1, 1, 4],
-            color= [0, 1, 0]
-        )
-        if self.DEBUG: table_pitch_axle.add_box_collision(
-            half_size= [1, 1, 4]
-        )
-
-        # table_roll_axle = table_builder.create_link_builder(table_pitch_axle)
-        # table_roll_axle.set_name("Table Roll Axle")
-        # table_roll_axle.set_joint_name("Table Roll Axle Bearing")
-        # table_roll_axle.set_joint_properties(
-        #     joint_type= "revolute",
-        #     limits= [[-0.25, 0.25]],
-        #     pose_in_parent= sapien.core.Pose([0, 0, 0], [0, 0.7071068, 0, 0.7071068])
-        # )
-
-        # if self.DEBUG: table_roll_axle.add_box_visual(
-        #     half_size= [1, 1, 4],
-        #     color= [0, 0, 1]
-        # )
-
-        self.table = table_builder.build(fix_root_link = True)
-        self.table.set_name("Table")
-
-        self.testpitchaxlejoint = [joint for joint in self.table.get_joints() if joint.name == "Table Pitch Axle Bearing"][0]
-        self.testpitchaxlejoint.set_drive_property(stiffness=100000.0, damping=1000000.0)
+        self.table = Table(self.scene)
 
     def init_camera(self):
         self.viewer.set_camera_xyz(-64, 0, 64)
@@ -108,14 +59,14 @@ class Game(object):
             self.scene.update_render()
             self.viewer.render()
 
-        # if self.viewer.window.key_down('i'):
-        #     print("i")
-        #     self.testpitchaxlejoint.set_drive_velocity_target(50.0)
-        # elif self.viewer.window.key_down('k'):
-        #     print("k")
-        #     self.testpitchaxlejoint.set_drive_velocity_target(-50.0)
-        # else:
-        #     self.testpitchaxlejoint.set_drive_velocity_target(0.0)
+        if self.viewer.window.key_down('i'):
+            print("i")
+            self.testrollaxlejoint.set_drive_target(0.5)
+        elif self.viewer.window.key_down('k'):
+            print("k")
+            self.testrollaxlejoint.set_drive_target(-0.5)
+        else:
+            self.testrollaxlejoint.set_drive_target(0.0)
         if self.viewer.window.key_down('j'):
             print("j")
             self.testpitchaxlejoint.set_drive_target(0.5)
@@ -129,7 +80,7 @@ class Game(object):
 
 
 def main():
-    game = Game(DEBUG= True)
+    game = Game()
 
 if __name__ == '__main__':
     main()
